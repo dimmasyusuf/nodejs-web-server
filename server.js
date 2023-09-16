@@ -8,12 +8,20 @@ const requestListener = (request, response) => {
 
   if (method === 'GET') {
     response.end('<h1>Hello!</h1>');
-  } else if (method === 'POST') {
-    response.end('<h1>Hai!</h1>');
-  } else if (method === 'PUT') {
-    response.end('<h1>Bonjour!</h1>');
-  } else if (method === 'DELETE') {
-    response.end('<h1>Salam!</h1>');
+  }
+
+  if (method === 'POST') {
+    let body = [];
+
+    request.on('data', (chunk) => {
+      body.push(chunk);
+    });
+
+    request.on('end', () => {
+      body = Buffer.concat(body).toString();
+      const { name } = JSON.parse(body);
+      response.end(`<h1>Hai, ${name}!</h1>`);
+    });
   }
 };
 
